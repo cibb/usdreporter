@@ -1,0 +1,14 @@
+/vendor
+/node_modules
+/public/storage
+/public/vendor
+Homestead.yaml
+Homestead.json
+.env
+
+# phpstorm
+/.idea
+_ide_helper.php
+_ide_helper_models.php
+
+

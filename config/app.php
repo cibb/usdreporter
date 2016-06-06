@@ -155,7 +155,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        'Xaamin\Whatsapi\WhatsapiServiceProvider'
+//        'Xaamin\Whatsapi\WhatsapiServiceProvider'
     ],
 
     /*
@@ -201,8 +201,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Whatsapi' => 'Xaamin\Whatsapi\Facades\Laravel\Whatsapi',
-        'WhatsapiTool' => 'Xaamin\Whatsapi\Facades\Laravel\Registration'
+//        'Whatsapi' => 'Xaamin\Whatsapi\Facades\Laravel\Whatsapi',
+//        'WhatsapiTool' => 'Xaamin\Whatsapi\Facades\Laravel\Registration'
     ],
 
 ];
