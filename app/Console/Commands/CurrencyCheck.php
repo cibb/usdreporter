@@ -96,7 +96,7 @@ class CurrencyCheck extends Command
                 if(!$sell)
                 {
                     $price = $currency->prices()->create(['value' => $data->sell,'key'=>'sell','concept'=>'venta']);
-                    return "Agregamos una nueva moneda: ".$currency->name." valorada en ".$price->value. " \r\n";
+                    return "Agregamos una nueva moneda: ".$currency->name." valorada en ".$price->value. "  - ";
                 }
 
                 if($sell AND $sell->value == $data->sell) {
@@ -108,10 +108,10 @@ class CurrencyCheck extends Command
 
                 if( $sell->value > $price->value)
                 {
-                    return $currency->name." AUMENTÓ a $".$price->value. " \r\n";
+                    return $currency->name." AUMENTÓ a $".$price->value. " - ";
                 }
 
-                return $currency->name." BAJÓ a $".$price->value. " \r\n";
+                return $currency->name." BAJÓ a $".$price->value. " - ";
                 break;
             default:
                 $this->error('Unexpected currency: '.$currency->name);
