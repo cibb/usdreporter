@@ -3,7 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Currency;
+use App\Price;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
+use Xaamin\Whatsapi\Facades\Laravel\Whatsapi;
 
 class CurrencyCheck extends Command
 {
@@ -24,7 +27,6 @@ class CurrencyCheck extends Command
     /**
      * Create a new command instance.
      *
-     * @return void
      */
     public function __construct()
     {
@@ -42,17 +44,15 @@ class CurrencyCheck extends Command
 
         $currencies = Currency::all();
 
+        $message = '';
         foreach($currencies as $currency)
         {
             $this->line('Working with '.$currency->name);
-            $this->processCurrency($currency);
+            $message .= $this->processCurrency($currency);
         }
 
-
-        $euro = json_decode(file_get_contents('http://www.bancogalicia.com/cotizacion/cotizar?currencyId=98&quoteType=SU&quoteId=999'));
-        $this->line('Información obtenida!');
-
-        //$this->console->error('Hey!');
+        if( $message != '')
+            $this->sendWhatsapp($message);
     }
 
     private function processCurrency($currency)
@@ -77,18 +77,54 @@ class CurrencyCheck extends Command
         {
             case 'USD':
             case 'EUR':
-                if(!isset($data['sell']) || !isset($data['buy']))
+                if(!isset($data->sell) || !isset($data->buy))
                 {
                     $this->error('Unexpected response: sell or buy not found');
+                    break;
                 }
 
-                $lastSell = $currency->prices(function($q){
-                    return $q->where('key','sell')->orWhere('key','buy')->orderBy('created_at','desc')->first();
-                });
+                $data->sell = str_replace(array('.', ','), array('', '.'), $data->sell);
+
+                if(!is_numeric($data->sell))
+                {
+                    $this->error('Sell property for '.$currency->name.' is not a number');
+                    return false;
+                }
+
+                $sell = $currency->prices->last();
+
+                if(!$sell)
+                {
+                    $price = $currency->prices()->create(['value' => $data->sell,'key'=>'sell','concept'=>'venta']);
+                    return "Agregamos una nueva moneda: ".$currency->name." valorada en ".$price->value. " \r\n";
+                }
+
+                if($sell AND $sell->value == $data->sell) {
+                    $this->info($currency->name.' se mantiene igual');
+                    break;
+                }
+
+                $price = $currency->prices()->create(['value' => $data->sell,'key'=>'sell','concept'=>'venta']);
+
+                if( $sell->value > $price->value)
+                {
+                    return $currency->name." AUMENTÓ a $".$price->value. " \r\n";
+                }
+
+                return $currency->name." BAJÓ a $".$price->value. " \r\n";
                 break;
             default:
                 $this->error('Unexpected currency: '.$currency->name);
                 break;
         }
+    }
+
+    private function sendWhatsapp($message)
+    {
+        $messages = Whatsapi::send($message, function($send)
+        {
+            $send->to(env('WHATSAPP_TO'));
+        });
+
     }
 }

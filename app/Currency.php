@@ -16,15 +16,6 @@ class Currency extends Model
     ];
 
     /**
-     * Autoload the currency information always.
-     *
-     * @var array
-     */
-    protected $with = [
-        'prices',
-    ];
-
-    /**
      * Get prices
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
