@@ -121,10 +121,8 @@ class CurrencyCheck extends Command
 
     private function sendWhatsapp($message)
     {
-        $messages = Whatsapi::send($message, function($send)
-        {
-            $send->to(env('WHATSAPP_TO'));
-        });
-
+        $this->callSilent('whatsapp:send', [
+            'number' => env('WHATSAPP_TO'), 'message' => $message
+        ]);
     }
 }
