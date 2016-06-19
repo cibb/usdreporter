@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\CurrencyCheck::class,
         \App\Console\Commands\sendwhatsapp::class,
+        \App\Console\Commands\receiveWhatsapps::class,
     ];
 
     /**
