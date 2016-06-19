@@ -38,14 +38,16 @@ class sendwhatsapp extends Command
      */
     public function handle()
     {
-        $message = count($this->argument("message"))>0 ? $this->argument("message") : $this->ask('What is the message?');
+        $message = count($this->argument("message")) > 0 ? $this->argumentToString($this->argument("message")) : $this->ask('What is the message?');
         $number = $this->argument("number");
 
-        $send = Whatsapi::send($message, function($send) use ($number)
-        {
+        $send = Whatsapi::send($message, function ($send) use ($number) {
             $send->to($number);
         });
+    }
 
-        dd($send);
+    private function argumentToString($text)
+    {
+        return implode(" ", $text);
     }
 }
