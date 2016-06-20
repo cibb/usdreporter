@@ -79,7 +79,7 @@ class Conversation extends Model
     private function send()
     {
         return Whatsapi::send($this->message, function ($send) {
-            $send->to($this->user()->number);
+            $send->to($this->user->number);
         });
     }
 }
