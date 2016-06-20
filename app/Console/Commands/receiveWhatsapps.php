@@ -56,9 +56,8 @@ class receiveWhatsapps extends Command
             $conversation = $user->conversations()->create(['message' => $message->body->data, 'received' => true]);
 
             if ($response = $conversation->process()) {
-                $this->callSilent('whatsapp:send', [
-                    'number' => $user->number, 'message' => $response
-                ]);
+                $newMessage = $user->conversation()->create(['message' => $response, 'received' => false]);
+                $newMessage->process();
             }
         }
 
