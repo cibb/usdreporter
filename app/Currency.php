@@ -28,6 +28,6 @@ class Currency extends Model
      * @return mixed
      */
     public function getLastPrice(){
-        return $this->prices()->last();
+        return $this->prices()->orderBy('created_at', 'desc')->first();
     }
 }
