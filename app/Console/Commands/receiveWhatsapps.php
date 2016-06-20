@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Conversation;
+use App\User;
 use Illuminate\Console\Command;
 use Xaamin\Whatsapi\Facades\Laravel\Whatsapi;
 
@@ -23,8 +25,6 @@ class receiveWhatsapps extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -40,17 +40,40 @@ class receiveWhatsapps extends Command
     {
         $messages = Whatsapi::getNewMessages();
 
-        if(is_null($messages))
-        {
+        if (is_null($messages)) {
             $this->info("No new messages");
             return true;
         }
 
-        foreach($messages as $message)
-        {
-            print_r($message);
+        foreach ($messages as $message) {
+            $user = User::firstOrNew(['number' => $this->getNumber($message->from)]);
+
+            if (!$user->exists) {
+                $user->name = $user->notify;
+                $user->save();
+            }
+
+            $conversation = $user->conversations()->create(['message' => $message->body->data, 'received' => true]);
+
+            if ($response = $conversation->process()) {
+                Whatsapi::send($response, function ($send) use ($user) {
+                    $send->to($user->number);
+                });
+            }
         }
 
         return true;
+    }
+
+    /**
+     * Get number from whatsapp username
+     *
+     * @param $cadena
+     * @return mixed
+     */
+    private function getNumber($cadena)
+    {
+        $result = explode("@", $cadena);
+        return $result[0];
     }
 }

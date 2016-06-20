@@ -23,4 +23,11 @@ class Currency extends Model
     {
         return $this->hasMany(Price::class);
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLastPrice(){
+        return $this->prices()->last();
+    }
 }
