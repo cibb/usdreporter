@@ -59,7 +59,7 @@ class Conversation extends Model
 
         if (strpos($this->message, "EUR")) {
             $currency = Currency::where('name','EUR')->first();
-            $response = "La cotización del euro es ".$currency->getLastPrice()->value."\r\n";
+            $response .= "La cotización del euro es ".$currency->getLastPrice()->value."\r\n";
             $this->metadata()->create(['name'=>'cotizationSent','value'=>'EUR']);
         }
 
