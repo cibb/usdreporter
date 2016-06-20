@@ -19,7 +19,7 @@ class CreateMetadatasTable extends Migration
             $table->text('value');
             $table->timestamps();
 
-            $table->foreign('conversation_id')->references('id')->on('conversation');
+            $table->foreign('conversation_id')->references('id')->on('conversations');
         });
     }
 
