@@ -12,7 +12,7 @@ class TransformUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('Users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('email');
             $table->dropColumn('password');
             $table->dropRememberToken();
@@ -27,7 +27,7 @@ class TransformUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('Users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('number');
             $table->string('email')->unique();
             $table->string('password');
