@@ -46,7 +46,7 @@ class receiveWhatsapps extends Command
         }
 
         foreach ($messages as $message) {
-            $user = User::firstOrNew(['phone' => $this->getNumber($message->number)]);
+            $user = User::firstOrNew(['number' => $this->getNumber($message->from)]);
 
             if (!$user->exists) {
                 $user->name = $message->notify;
