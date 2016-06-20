@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Xaamin\Whatsapi\Facades\Laravel\Whatsapi;
 
 class Conversation extends Model
 {
@@ -50,19 +51,35 @@ class Conversation extends Model
      */
     public function process()
     {
+        if (!$this->received) {
+            return $this->send();
+        }
+
         $response = false;
         if (strpos($this->message, "USD")) {
-            $currency = Currency::where('name','USD')->first();
-            $response = "La cotización del dolar es ".$currency->getLastPrice()->value."\r\n";
-            $this->metadata()->create(['name'=>'cotizationSent','value'=>'USD']);
+            $currency = Currency::where('name', 'USD')->first();
+            $response = "La cotización del dolar es " . $currency->getLastPrice()->value . "\r\n";
+            $this->metadata()->create(['name' => 'cotizationSent', 'value' => 'USD']);
         }
 
         if (strpos($this->message, "EUR")) {
-            $currency = Currency::where('name','EUR')->first();
-            $response .= "La cotización del euro es ".$currency->getLastPrice()->value."\r\n";
-            $this->metadata()->create(['name'=>'cotizationSent','value'=>'EUR']);
+            $currency = Currency::where('name', 'EUR')->first();
+            $response .= "La cotización del euro es " . $currency->getLastPrice()->value . "\r\n";
+            $this->metadata()->create(['name' => 'cotizationSent', 'value' => 'EUR']);
         }
 
         return $response;
+    }
+
+    /**
+     * Send message
+     *
+     * @return mixed
+     */
+    private function send()
+    {
+        return Whatsapi::send($this->message, function ($send) {
+            $send->to($this->user()->number);
+        });
     }
 }
