@@ -78,7 +78,7 @@ class Conversation extends Model
      */
     private function send()
     {
-        return Whatsapi::send($this->message, function ($send) use ($this) {
+        return Whatsapi::send($this->message, function ($send) {
             $send->to($this->user()->number);
         });
     }
