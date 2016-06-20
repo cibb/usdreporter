@@ -53,13 +53,13 @@ class Conversation extends Model
         $response = false;
         if (strpos($this->message, "USD")) {
             $currency = Currency::where('name','USD')->first();
-            $response = "La cotización del dolar es ".$currency->getLastPrice()->price()."\r\n";
+            $response = "La cotización del dolar es ".$currency->getLastPrice()->value."\r\n";
             $this->metadata()->create(['name'=>'cotizationSent','value'=>'USD']);
         }
 
         if (strpos($this->message, "EUR")) {
             $currency = Currency::where('name','USD')->first();
-            $response = "La cotización del euro es ".$currency->getLastPrice()->price()."\r\n";
+            $response = "La cotización del euro es ".$currency->getLastPrice()->value."\r\n";
             $this->metadata()->create(['name'=>'cotizationSent','value'=>'EUR']);
         }
 
