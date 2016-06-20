@@ -49,7 +49,7 @@ class receiveWhatsapps extends Command
             $user = User::firstOrNew(['number' => $this->getNumber($message->from)]);
 
             if (!$user->exists) {
-                $user->name = $user->notify;
+                $user->name = $message->notify;
                 $user->save();
             }
 
