@@ -46,7 +46,7 @@ class receiveWhatsapps extends Command
         }
 
         foreach ($messages as $message) {
-            $user = User::firstOrNew(['number' => $this->getNumber($message->from)]);
+            $user = User::firstOrNew(['phone' => $this->getNumber($message->from)]);
 
             if (!$user->exists) {
                 $user->name = $message->notify;
@@ -57,7 +57,7 @@ class receiveWhatsapps extends Command
 
             if ($response = $conversation->process()) {
                 Whatsapi::send($response, function ($send) use ($user) {
-                    $send->to($user->number);
+                    $send->to($user->phone);
                 });
             }
         }
